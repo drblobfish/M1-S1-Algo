@@ -29,6 +29,15 @@ class Stack:
         print('size=',self.size,', items=',self.items)
 
 class Queue:
+    '''
+        class for queue, use a Python list
+        attributes :
+        - items : list
+        methods :
+        - empty() : True if queue is empty
+        - queue()
+        - dequeue() : throws an error if queue is empty
+    '''
     def __init__(self):
         self.items = []
 
@@ -231,6 +240,172 @@ class BST(Tree):
 
         
 
+class ArrayStack:
+    '''
+        attributes :
+        - size : int 
+        - items : list
+        methods :
+        - push(x) : push the data x which is an instance of Item 
+        - pop() : if the stack is not empty, pop and return the data, else do nothing and return None
+        - print() : print the attributes
+    '''
+    def __init__(self):
+        self.size = 0
+        self.capacity = 2**8
+        self.list = [None]*self.capacity
+
+    def push(self,x):
+        if self.size >= self.capacity:
+            self.allocate_longer()
+        self.list[self.size] = x
+        self.size +=1
+
+    def allocate_longer(self):
+        self.list = self.list + [None]*self.capacity
+        self.capacity *= 2
+
+    def pop(self):
+        self.size -= 1
+        return self.list[self.size]
+
+    def __repr__(self):
+        return self.list[:self.size].__repr__()
+
+    def print(self):
+        print(self)
+
+
+class ArrayQueue:
+    '''
+        class for queue
+        attributes :
+        - items : list
+        methods :
+        - empty() : True if queue is empty
+        - queue()
+        - dequeue() : throws an error if queue is empty
+    '''
+
+    def __init__(self):
+        self.start = 0
+        self.size = 0
+        self.capacity = 2**8
+        self.list = [None]*self.capacity
+
+    def empty(self):
+        return self.size <= 0
+
+    def queue(self,x):
+        if self.size >= self.capacity:
+            self.allocate_longer()
+        self.list[(self.start+self.size) % self.capacity] = x
+        self.size += 1
+
+    def allocate_longer(self):
+        new_list = [None] * (2*self.capacity)
+        for i in range(self.size):
+            new_list[i] = self.list[(self.start+i) % self.capacity]
+        self.capacity *= 2
+        self.list = new_list
+
+    def dequeue(self):
+        elem = self.list[self.start]
+        self.size -= 1
+        self.start = (self.start + 1) % self.capacity
+        return elem
+
+    def __repr__(self):
+        return "[" + ", ".join(str(self.list[(self.start+i) % self.capacity]) for i in range(self.size)) + "]"
+
+
+class LLNode:
+    def __init__(self,data):
+        self.data = data
+        self.next = None
+
+    def __repr__(self):
+        return str(self.data)
+
+class LLStack:
+    '''
+        stack as a linked list
+        attributes :
+        - size : int 
+        - top : LLNode
+        methods :
+        - push(x) : push the data x which is an instance of Item 
+        - pop() : if the stack is not empty, pop and return the data, else do nothing and return None
+        - print() : print the attributes
+    '''
+    def __init__(self):
+        self.size = 0
+        self.top = None
+
+    def push(self,x):
+        self.size += 1
+        node = LLNode(x)
+        node.next = self.top
+        self.top = node
+
+    def pop(self):
+        if self.size <= 0:
+            raise Exception("Empty Stack") 
+        self.size -= 1
+        node = self.top
+        self.top = node.next
+        return node.data
+
+    def __repr__(self):
+        return f"LLStack(size = {self.size}, top = {self.top})"
+
+    def print(self):
+        print(self)
+
+class LLQueue:
+    '''
+    Queue as a linked list
+    attributes :
+        - size : int 
+        - start : LLNode (links go from end to start)
+        - end : LLNode
+    methods :
+        - empty() : True if queue is empty
+        - queue()
+        - dequeue() : throws an error if queue is empty
+    '''
+
+    def __init__(self):
+        self.size = 0
+        self.start = None
+        self.end = None
+
+    def empty(self):
+        return self.size <= 0
+
+    def queue(self,x):
+        node = LLNode(x)
+        if self.empty():
+            self.start = node
+            self.end = node
+        else :
+            self.start.next = node
+            self.start = node
+        self.size +=1
+
+    def dequeue(self):
+        if self.empty():
+            raise Exception("Empty Queue")
+        node = self.end
+        self.end = node.next
+        self.size -= 1
+        if self.empty():
+            self.start = None
+        return node.data
+    
+    def __repr__(self):
+        return f"LLQueue(size = {self.size}, start = {self.start}, end = {self.end})"
+
 ################################  Tests  ################################## 
 
 s=Stack()
@@ -244,7 +419,7 @@ s.print()
 s.pop()
 s.print() 
 
-       
+###### BST ########       
 
 t = BST()
 for i in [3,5,1,6,7,8,2,9]:
@@ -270,3 +445,46 @@ for i in [0, 2, 3, 5, 8, 9, 15]:
 
 #t.depth_first_print()
 #t.breadth_first_print()
+
+
+###### ArrayStack ########       
+
+s = ArrayStack()
+for i in range(300):
+    s.push(i)
+print(s)
+for i in range(300):
+    s.pop()
+print(s)
+
+    
+###### ArrayQueue ########       
+
+q = ArrayQueue()
+for i in range(300):
+    q.queue(i)
+print(q)
+for i in range(300):
+    q.dequeue()
+print(q)
+
+
+###### LLStack  ########       
+
+s = LLStack()
+for i in range(300):
+    s.push(i)
+print(s)
+for i in range(300):
+    s.pop()
+print(s)
+
+###### LLQueue  ########       
+
+q = LLQueue()
+for i in range(300):
+    q.queue(i)
+print(q)
+for i in range(300):
+    q.dequeue()
+print(q)
