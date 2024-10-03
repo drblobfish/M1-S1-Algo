@@ -13,6 +13,18 @@ class Frame:
     def __init__(self,x):
         self.data=x
         self.next=None
+
+
+class Linked_list_iterator:
+    def __init__(self,frame):
+        self.frame = frame
+    def __next__(self):
+        if self.frame == None:
+            raise StopIteration
+        val = self.frame.data
+        self.frame = self.frame.next
+        return val
+
         
 class Linked_list:
     '''
@@ -32,6 +44,9 @@ class Linked_list:
     def __init__(self):
         self.head=None
 
+    def __iter__(self):
+        return Linked_list_iterator(self.head)
+
     def is_empty(self):
         return self.head is None
         
@@ -47,6 +62,21 @@ class Linked_list:
         self.head=self.head.next
         return x
 
+    def filter_rec(self,cond,frame):
+        if frame == None:
+            return frame
+        if cond(frame.data):
+            frame.next = self.filter_rec(cond,frame.next)
+            return frame
+        else :
+            return self.filter_rec(cond,frame.next)
+
+    def filter(self,cond):
+        '''
+        cond : predicate on the data
+        '''
+        self.head = self.filter_rec(cond,self.head)
+
     def print(self):  # fonction d'affichage de la liste
         print('Liste chainees= ',end='')
         current=self.head
@@ -55,14 +85,15 @@ class Linked_list:
             current=current.next
         print()    
 ################################  Tests  ################################## 
-'''
-print()       
-l=Linked_list()
-for i in range(3):
-    l.append(i)
+if __name__=="__main__":
+    print()       
+    l=Linked_list()
+    for i in range(20):
+        l.append(i)
     l.print()
 
-for i in range(4):
-    print('element retiré :',l.pop())
-    l.print() 
-'''
+    l.filter(lambda x : x!=12)
+    l.print()
+
+    l.filter(lambda x : x%2 == 0)
+    l.print()

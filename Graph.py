@@ -87,6 +87,11 @@ class Graph:
         if i<len(self.nodes) and j<len(self.nodes):
             e=Edge(self.nodes[j],w)
             self.nodes[i].adj.append(e)
+
+    def remove_edge(self,i,j):
+        if i<len(self.nodes) and j<len(self.nodes):
+            self.nodes[i].adj.filter(lambda x : x.head.index != j)
+
             
     def print_adj_list(self):
         for n in self.nodes:
@@ -95,14 +100,19 @@ class Graph:
     
                 
 ################################  Tests  ################################## 
-q=Queue.Queue()
-g1=Graph()
-print('Un graphe vide :')
-g1.print_adj_list()
+if __name__=="__main__":
+    q=Queue.Queue()
+    g1=Graph()
+    print('Un graphe vide :')
+    g1.print_adj_list()
 
-l=['a','b','c','e','f','d','g','h']
-g2=Graph(l)
-g2.add_edge(0,2)
-print()
-print('Un graphe avec un arc (0,2)')
-g2.print_adj_list()
+    l=['a','b','c','e','f','d','g','h']
+    g2=Graph(l)
+    g2.add_edge(0,2)
+    print()
+    print('Un graphe avec un arc (0,2)')
+    g2.print_adj_list()
+
+    print("g2.remove_edge(0,2)")
+    g2.remove_edge(0,2)
+    g2.print_adj_list()
