@@ -1,4 +1,4 @@
-
+import numpy as np
 
 class Heap:
     def __init__(self,max_size=100):
@@ -14,7 +14,7 @@ class Heap:
         return self.items[i]<self.items[j]
 
     def node_exist(self,i):
-        return 0 <= i < self.max_size
+        return 0 <= i < self.size
 
     def swap(self,i,j):
         tmp = self.items[i]
@@ -37,6 +37,7 @@ class Heap:
         child2 = 2*i+2
         if self.is_lower(i,child1) and self.is_lower(i,child2):
             # the tree[i] is a min heap
+            pass
         else :
             # we need to swap i with one of its children
             if self.is_lower(child1,child2):
@@ -78,7 +79,9 @@ class Heap:
         flag_continue = True
         while flag_continue:
             parent = (i-1)//2
-            if self.is_lower(i,parent):
+            if i == 0:
+                flag_continue = False
+            elif self.is_lower(i,parent):
                 self.swap(parent,i)
                 i = parent
             else :
@@ -88,11 +91,51 @@ class Heap:
         assert self.node_exist(i) , "Tried to extract inexistant node"
         extracted_value = self.items[i]
         
-        if self.is_lower(i,self.size-1) # TBD
+        if self.is_lower(i,self.size-1):
+            #swap for last value
+            self.items[i] = self.items[self.size-1]
+            self.items[self.size-1] = None
+            self.size -= 1
+            self.heapify(i)
+        else :
+            self.items[i] = self.items[self.size-1]
+            self.items[self.size-1] = None
+            self.size -= 1
+            self.percolate(i)
 
-        #swap for last value
-        self.items[i] = self.items[self.size-1]
-        self.items[self.size-1] = None
-        self.size -= 1
+        return extracted_value
 
-        if 
+    def insert(self,value):
+        if self.size >= self.max_size:
+            self.extend_size(self.size)
+        
+        self.size += 1
+        self.items[self.size-1] = value
+        self.percolate(self.size-1)
+
+
+def build_heap(value_list):
+    h = Heap()
+    n = len(value_list)
+    h.items = list(value_list)
+    h.max_size = n
+    h.size = n
+
+    for i in range((n-2)//2,-1,-1):
+        h.heapify(i)
+
+    return h
+
+def heap_sort(values):
+    h = build_heap(values)
+    for i in range(len(values)):
+        values[i] = h.extract(0)
+
+
+if __name__=="__main__":
+    v = np.random.randint(0,100,100)
+    print(v)
+    heap_sort(v)
+    print(v)
+
+
